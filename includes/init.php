@@ -8,3 +8,5 @@ defined('INCLUDES_PATH') ? null : define('INCLUDES_PATH', SITE_ROOT . DS . 'incl
 
 require_once('config.php');
 require_once('database.php');
+require_once('db_object.php');
+require_once('user.php');
