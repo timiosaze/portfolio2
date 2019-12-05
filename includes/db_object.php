@@ -9,7 +9,7 @@
 		private function has_the_key_atribute($the_key_atribute){
 
 			//GET THE PROPERTIES OF PRESENT CLASS
-			$obj_properties = get_class_vars($this);
+			$obj_properties = get_class_vars(get_class($this));
 
 			//CHECK IF THE KEYS OF THE CLASS EXIST IN THE PROPERTIES OF THE CLASS
 			//WILL RETURN TRUE IF IT IS IN THE PROPERTIES OR ELSE FALSE
@@ -110,6 +110,48 @@
 
 		public function save(){
 			return $this->create();
+		}
+
+		public function update(){
+			global $database;
+
+			$properties = $this->clean_properties();
+
+			$properties_pair = [];
+
+			foreach ($properties as $key => $value) {
+			 	$properties_pair[] = "{$key} = '{$value}'";
+			 } 
+
+			 $sql = "UPDATE set static::$db_table ";
+			 $sql .= implode(", ", $properties_pair);
+			 $sql .= " WHERE id = " . $database->escaped_string($this->id);
+
+			 $database->query($sql);
+
+			 return (mysqli_affected_rows($database->connection) == 1) ? true : false;
+		}
+
+		public function delete(){
+			global $database;
+
+			$sql = "DELETE FROM " . static::$db_table;
+			$sql .= " WHERE id = " . $database->escaped_string($this->id);
+			$sql .= " LIMIT 1";
+
+			$database->query($sql);
+
+			return (mysqli_affected_rows($database->connection) == 1) ? true : false;
+		}
+
+		public function count_all(){
+			global $database;
+
+			$sql = "SELECT COUNT(*) FROM " . static::$db_table;
+			$result_query = $database->query($sql);
+			$row = mysqli_fetch_array($result_query);
+
+			return array_shift($row);
 		}
 	}
 

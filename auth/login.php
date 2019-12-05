@@ -1,6 +1,18 @@
-<?php require_once("../includes/config.php"); ?>
-<?php require_once("../includes/functions.php"); ?>
-<?php session_start(); ?>
+<?php require_once("../includes/init.php"); ?>
+<?php 
+	if(isset($_POST['login']) && !empty($_POST['username']) &&  !empty($_POST['password'])){
+		$login_results = User::verify_user($_POST['username'], $_POST['password']);
+
+		foreach($login_results as $the_data){
+			$hashed_password = $the_data->password;
+		}
+
+		if(password_verify($password, $hashed_password)){
+			
+		}
+	}
+
+ ?>
 
 <!DOCTYPE html>
 <html>
@@ -67,7 +79,7 @@
 	</nav>
 	<section class="container">
 		<section class="auth">
-			<form autocomplete="off" id="login_form" method="post" action="../includes/login.php">
+			<form autocomplete="off" id="login_form" method="post">
 			  <div class="container">
 			  <label>Login</label>
 			  <?php if(isset($_SESSION['error_login'])){
