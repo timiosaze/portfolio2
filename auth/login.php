@@ -1,18 +1,11 @@
+<?php ob_start(); ?>
 <?php require_once("../includes/init.php"); ?>
+<?php echo $_SESSION['link']; ?>
 <?php 
 	if(isset($_POST['login']) && !empty($_POST['username']) &&  !empty($_POST['password'])){
-		$login_results = User::verify_user($_POST['username'], $_POST['password']);
-
-		foreach($login_results as $the_data){
-			$hashed_password = $the_data->password;
-		}
-
-		if(password_verify($password, $hashed_password)){
-			
-		}
+		User::login_user($_POST['username'], $_POST['password']);
 	}
-
- ?>
+?>
 
 <!DOCTYPE html>
 <html>
@@ -42,7 +35,7 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-white">
 	 <div class="container">
-	  <a class="navbar-brand" href="#">PORTFOLIO</a>
+	  <a class="navbar-brand" href="../index.php">PORTFOLIO</a>
 	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 	    <span class="navbar-toggler-icon"></span>
 	  </button>

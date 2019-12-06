@@ -30,6 +30,37 @@
 
 			
 		}
+
+		public static function login_user($username, $password){
+
+			$login_results = self::verify_user($username, $password);
+			$hashed_password = $login_results->password;
+			$id = $login_results->id;
+			$username= $login_results->username;
+			
+			if(password_verify($password, $hashed_password)){
+				 $_SESSION['id'] = $id;
+				 $_SESSION['username'] = $username;
+				 switch ($_SESSION['link']) {
+				 	case 'note':
+				 		redirect("../project/notes.php");
+				 		exit();
+				 		break;
+				 	case 'contact':
+				 		redirect("../project/contacts.php");
+				 		exit();
+				 		break;
+				 	case 'appoint':
+				 		redirect("../project/appointments.php");
+				 		exit();
+				 		break;
+				 	default:
+				 		redirect("../index.php");
+				 		exit();
+				 		break;
+				 }
+			}
+		}
 	}
 
  ?>
