@@ -52,10 +52,16 @@
 			return static::find_by_query("SELECT * FROM " . static::$db_table . " ");
 		}
 
-		public static function find_by_id(){
+		public static function find_by_id($id){
 			$the_result_array = static::find_by_query("SELECT * FROM " . static::$db_table . " WHERE id = $id LIMIT 1 ");
 
 			return !empty($the_result_array) ? array_shift($the_result_array) : false; 
+		}
+
+		public static function find_user_id($id){
+			$the_result_array = static::find_by_query("SELECT user_id FROM " . static::$db_table . " WHERE id = $id");
+			return !empty($the_result_array) ? array_shift($the_result_array) : false; 
+
 		}
 
 		protected function properties(){
@@ -112,7 +118,7 @@
 			return $this->create();
 		}
 
-		public function update(){
+		public function update($id){
 			global $database;
 
 			$properties = $this->clean_properties();
@@ -123,9 +129,9 @@
 			 	$properties_pair[] = "{$key} = '{$value}'";
 			 } 
 
-			 $sql = "UPDATE set static::$db_table ";
+			 $sql = "UPDATE " . static::$db_table . " SET ";
 			 $sql .= implode(", ", $properties_pair);
-			 $sql .= " WHERE id = " . $database->escaped_string($this->id);
+			 $sql .= " WHERE id = $id";
 
 			 $database->query($sql);
 
