@@ -13,4 +13,5 @@ require_once('user.php');
 require_once('functions.php');
 require_once('paginate.php');
 require_once('note.php');
+require_once('contact.php');
 session_start();

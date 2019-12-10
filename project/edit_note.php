@@ -100,7 +100,8 @@
 		</div>
 		<div class="post">
 			<?php if(isset($_SESSION['blank_statement'])): ?>
-				<?php echo $_SESSION['blank_statement']; ?>
+				<?php echo $_SESSION['blank_statement']; 
+					  unset($_SESSION['blank_statement']); ?>
 				<?php else: ?>
 				<?php 
 					$notes = Note::find_by_id($_GET['id']);

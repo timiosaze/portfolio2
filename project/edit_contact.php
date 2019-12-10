@@ -14,34 +14,35 @@
 			redirect("../auth/login.php");
 		}
  ?>
- <?php if(isset($_GET['del_id'])) {
- 			$user_id = Contact::find_user_id($_GET['del_id'])->user_id;
- 			if($_SESSION['id'] == $user_id){
- 				$contact = new Contact();
- 				if($contact->delete($_GET['del_id'])){
- 					$_SESSION['alert-success'] = "Contact was successfully deleted";
- 					redirect("contacts.php");
- 					exit();
- 				} else {
- 					$_SESSION['alert-danger'] = "Contact was not deleted";
- 					redirect("contacts.php");
- 					exit();
- 				}
- 			}
- 		} 
- ?>
- <?php if(isset($_POST['create_contact']) && !empty($_POST['contact_number']) && !empty($_POST['contact_name'])){
- 			$contacts = new Contact();
- 			$contacts->user_id = trim($_SESSION['id']);
- 			$contacts->contact_name = trim($_POST['contact_name']);
- 			$contacts->contact_number = trim($_POST['contact_number']);
+ <?php 
 
- 			if($contacts->save()){
- 				$_SESSION['alert-success'] = "Contact was successfully created";
+ 		if(isset($_GET['id'])){
+ 			$user_id = Contact::find_user_id($_GET['id'])->user_id;
+ 			if($_SESSION['id'] == $user_id){
+ 				if(isset($_POST['update_contact']) && !empty($_POST['contact_number']) && !empty($_POST['contact_name'])){
+		 			$contacts = new Contact();
+		 			$contacts->user_id = trim($_SESSION['id']);
+		 			$contacts->contact_name = trim($_POST['contact_name']);
+		 			$contacts->contact_number = trim($_POST['contact_number']);
+
+		 			if($contacts->update($_GET['id'])){
+		 				$_SESSION['alert-success'] = "Contact was successfully created";
+		 				redirect("contacts.php");
+		 				exit();
+		 			} else {
+		 				$_SESSION['alert-danger'] = "Contact was not created";
+		 				redirect("contacts.php");
+		 				exit();
+		 			}
+		 		} 
  			} else {
- 				$_SESSION['alert-danger'] = "Contact was not created";
+ 				$_SESSION['blank_statement'] = "YOU ARE NOT THE OWNER OF THIS CONTACT";
  			}
- 		} 
+ 		} else {
+ 			redirect("contacts.php");
+ 			exit();
+ 		}
+
  ?>
 <!DOCTYPE html>
 <html>
@@ -185,58 +186,24 @@
 		</div>
 		<div class="post">
 			<form class="container-fluid" method="post">
-			 <?php include("../includes/sessions.php"); ?>
-			  <div class="form-group">
-			    <label for="contact_name">Name</label>
-			    <input type="text" class="form-control" id="contact_name" name="contact_name" aria-describedby="emailHelp" placeholder="Enter name">
-			  </div>
-			  <div class="form-group">
-			    <label for="phonenumber">Phone Number</label>
-			    <input type="number" class="form-control" id="phonenumber" name="contact_number" placeholder="Phone number">
-			  </div>
-			  <button type="submit" class="btn btn-dark" name="create_contact">Submit</button>
+			 <?php if(isset($_SESSION['blank_statement'])): ?>
+			 	<?php echo $_SESSION['blank_statement'];
+			 		 unset($_SESSION['blank_statement']); ?>
+			 <?php else: ?>
+				 <?php include("../includes/sessions.php"); ?>
+				 <?php $contacts = Contact::find_by_id($_GET['id']); ?>
+				  <div class="form-group">
+				    <label for="contact_name">Name</label>
+				    <input type="text" class="form-control" id="contact_name" name="contact_name" aria-describedby="emailHelp" placeholder="Enter name" value="<?php echo $contacts->contact_name; ?>">
+				  </div>
+				  <div class="form-group">
+				    <label for="phonenumber">Phone Number</label>
+				    <input type="number" class="form-control" id="phonenumber" name="contact_number" placeholder="Phone number" value="<?php echo $contacts->contact_number; ?>">
+				  </div>
+				  <button type="submit" class="btn btn-dark" name="update_contact">Submit</button>
+			<?php endif; ?>
 			</form>
 		</div> 
-	</section>
-	<section class="header">
-		<div class="header-topic container-fluid">
-			<p>NUMBERS(click to edit | delete)</p>
-		</div>
-		<?php $contacts = Contact::find_all(); ?>
-		<?php foreach ($contacts as $contact): ?>
-		<div class="element-group">
-			<div class="element">
-				<div class="container">
-					<div class="row">
-						<div class="col contact_name">
-							<p><?php echo $contact->contact_name; ?></p>
-						</div>
-						<div class="col contact_number">
-							<p><?php echo $contact->contact_number; ?></p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="container actions">
-				<div class="row inside-container">
-					<div class="col">
-						<form id="editForm" class="edit-form">
-							<!-- <span class="time">11:34pm</span> -->
-							<a href="edit_contact.php?id=<?php echo $contact->id; ?>">EDIT</a>
-							<!-- <button type="button" class="btn btn-secondary btn-sm">Edit</button>	 -->
-						</form>
-					</div>
-					<div class="col">
-						<form id="editForm" class="delete-form">
-							<!-- <span class="time">11:34pm</span> -->
-							<a href="contacts.php?del_id=<?php echo $contact->id; ?>">DELETE</a>
-							<!-- <button type="button" class="btn btn-secondary btn-sm">Edit</button>	 -->
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	<?php endforeach; ?>
 	</section>
 	
 	</section>

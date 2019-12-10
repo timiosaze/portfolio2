@@ -138,11 +138,11 @@
 			 return (mysqli_affected_rows($database->connection) == 1) ? true : false;
 		}
 
-		public function delete(){
+		public function delete($id){
 			global $database;
 
 			$sql = "DELETE FROM " . static::$db_table;
-			$sql .= " WHERE id = " . $database->escaped_string($this->id);
+			$sql .= " WHERE id = $id ";
 			$sql .= " LIMIT 1";
 
 			$database->query($sql);

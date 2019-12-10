@@ -1,7 +1,7 @@
 <?php ob_start(); ?>
 <?php require_once("../includes/init.php"); ?>
 <?php if(isset($_SESSION['link'])){
-			echo $_SESSION['link'];
+
 	  } elseif(isset($_GET['link'])){
 	  		$_SESSION['link'] = $_GET['link'];
 	  }else{
@@ -14,6 +14,26 @@
 		}else{
 			redirect("../auth/login.php");
 		}
+ ?>
+ <?php if(isset($_GET['del_id'])){
+ 			$notes = new Note();
+ 			$user_id = Note::find_user_id($_GET['del_id'])->user_id;
+ 			if($_SESSION['id'] == $user_id){
+ 				if($notes->delete($_GET['del_id'])){
+	 				$_SESSION['alert-success'] = "Note was successfully deleted";
+	 				redirect("notes.php");
+	 				exit();
+	 			} else {
+	 				$_SESSION['alert-danger'] = "Note was not deleted";
+	 				redirect("notes.php");
+	 				exit();
+	 			}
+ 			} else {
+ 				$_SESSION['alert-danger'] = "You are not entitled to this operation";
+ 				redirect("notes.php");
+ 				exit();
+ 			}
+ 		} 
  ?>
 <?php 
 	if(isset($_POST['create_note']) && !empty($_POST['note'])){
@@ -110,14 +130,14 @@
 					<div class="col">
 						<form id="editForm" class="edit-form">
 							<!-- <span class="time">11:34pm</span> -->
-							<a href="edit_note.php?id=<?php echo $the_note->id ?>">EDIT</a>
+							<a href="edit_note.php?id=<?php echo $the_note->id; ?>">EDIT</a>
 							<!-- <button type="button" class="btn btn-secondary btn-sm">Edit</button>	 -->
 						</form>
 					</div>
 					<div class="col">
 						<form id="editForm" class="delete-form">
 							<!-- <span class="time">11:34pm</span> -->
-							<a href="javascript:{}" onclick="document.getElementById('editForm').submit();">DELETE</a>
+							<a href="notes.php?del_id=<?php echo $the_note->id; ?>" onclick="document.getElementById('editForm').submit();">DELETE</a>
 							<!-- <button type="button" class="btn btn-secondary btn-sm">Edit</button>	 -->
 						</form>
 					</div>
