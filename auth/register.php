@@ -55,12 +55,12 @@
 			if($password !== $c_password){
 				$error['c_password'] = 'password not matching';
 			}
-			// if(username_exists($username)){
-			// 	$error['username'] = 'username already taken';
-			// }
-			// if(email_exists($user_mail)){
-			// 	$error['user_mail'] = 'email already used';
-			// }
+			if(User::username_exists($username)){
+				$error['username'] = 'username already taken';
+			}
+			if(User::usermail_exists($usermail)){
+				$error['usermail'] = 'email already used';
+			}
 			foreach($error as $key => $value){
 				if(empty($value)){
 					unset($error[$key]);
@@ -129,7 +129,7 @@
 			  </div>
 			  <div class="form-group">
 			    <input type="email" class="form-control" id="email" name="user_mail" placeholder="Enter email">
-			    <?php echo isset($error['user_mail']) ? "<div class='text-danger'><small>" . $error['user_mail'] . "</div>" : ''; ?>
+			    <?php echo isset($error['usermail']) ? "<div class='text-danger'><small>" . $error['usermail'] . "</div>" : ''; ?>
 			  </div>
 			  <div class="form-group">
 			    <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" placeholder="Password">

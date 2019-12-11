@@ -61,6 +61,30 @@
 				 }
 			}
 		}
+
+		public static function username_exists($username){
+			global $database;
+
+			$sql = "SELECT username FROM ". self::$db_table . " WHERE username = '{$username}' ";
+			$result_query = $database->query($sql);
+			if(mysqli_num_rows($result_query) > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public static function usermail_exists($usermail){
+			global $database;
+
+			$sql = "SELECT usermail FROM " . self::$db_table . " WHERE usermail = '{$usermail}' ";
+			$result_query = $database->query($sql);
+			if(mysqli_num_rows($result_query) > 0){
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
  ?>
