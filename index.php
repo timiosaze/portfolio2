@@ -39,12 +39,11 @@
 			<img src="images/timipic.jpeg" class="pic">
 		</div>
 		<div class="social-icons">
-			<a href="#"><i class="fab fa-github fa-2x"></i></a>
-			<a href="#"><i class="fab fa-linkedin fa-2x"></i></a>
+			<a href="https://github.com/timiosaze"><i class="fab fa-github fa-2x"></i></a>
 		</div>
 		<div class="profile-details">
 			<p><span id="name">ADEGBULUGBE TIMILEHIN OSAZE</span><br>
-			<span id="field">WEB DEVELOPER</span><br>
+			<span id="field">INSPIRING WEB DEVELOPER</span><br>
 			<span id="skill">PHP | LARAVEL | BASIC FRONTEND</span></p>
 		</div>
 	</section>

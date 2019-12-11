@@ -1,21 +1,9 @@
 <?php ob_start(); ?>
 <?php require_once("../includes/init.php"); ?>
-<?php if(isset($_SESSION['link'])){
+<?php include("../includes/check_the_link.php"); ?>
+<?php include("../includes/check_if_login.php"); ?>
 
-	  } elseif(isset($_GET['link'])){
-	  		$_SESSION['link'] = $_GET['link'];
-	  }else{
-	  		redirect("../index.php");
-	  }
-?>
-<?php 
-		if(isset($_SESSION['id'])){
-
-		}else{
-			redirect("../auth/login.php");
-		}
- ?>
- <?php if(isset($_GET['del_id'])){
+<?php if(isset($_GET['del_id'])){
  			$notes = new Note();
  			$user_id = Note::find_user_id($_GET['del_id'])->user_id;
  			if($_SESSION['id'] == $user_id){
@@ -115,7 +103,7 @@
 		<div class="header-topic container-fluid">
 			<p>NOTES(click to edit or delete)</p>
 		</div>
-		<?php $notes = Note::find_all(); ?>
+		<?php $notes = Note::find_all_by_user($_SESSION['id']); ?>
 		<?php foreach($notes as $the_note): ?>
 		<div class="element-group">
 			<div class="element">

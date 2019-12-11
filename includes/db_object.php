@@ -52,6 +52,9 @@
 			return static::find_by_query("SELECT * FROM " . static::$db_table . " ");
 		}
 
+		public static function find_all_by_user($user_id){
+			return static::find_by_query("SELECT * FROM " . static::$db_table . " WHERE user_id = $user_id ");
+		}
 		public static function find_by_id($id){
 			$the_result_array = static::find_by_query("SELECT * FROM " . static::$db_table . " WHERE id = $id LIMIT 1 ");
 

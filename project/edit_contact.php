@@ -1,20 +1,9 @@
 <?php ob_start(); ?>
 <?php require_once("../includes/init.php"); ?>
-<?php if(isset($_SESSION['link'])){
-	  }elseif(isset($_GET['link'])){
-	  		$_SESSION['link'] = $_GET['link'];
-	  }else{
-	  		redirect("../index.php");
-	  }
-?>
-<?php 
-		if(isset($_SESSION['id'])){
+<?php include("../includes/check_the_link.php"); ?>
+<?php include("../includes/check_if_login.php"); ?>
 
-		}else{
-			redirect("../auth/login.php");
-		}
- ?>
- <?php 
+<?php 
 
  		if(isset($_GET['id'])){
  			$user_id = Contact::find_user_id($_GET['id'])->user_id;
@@ -143,7 +132,7 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-white">
 	 <div class="container">
-	  <a class="navbar-brand" href="#">PORTFOLIO</a>
+	  <a class="navbar-brand" href="../index.php">PORTFOLIO</a>
 	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 	    <span class="navbar-toggler-icon"></span>
 	  </button>

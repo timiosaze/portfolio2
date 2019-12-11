@@ -4,43 +4,40 @@
 <?php include("../includes/check_if_login.php"); ?>
 
 <?php 
-	if(isset($_GET['id'])){
+		if(isset($_GET['id'])){
+			$user_id = Meeting::find_user_id($_GET['id'])->user_id;
+			if($user_id == $_SESSION['id']){
+				if(isset($_POST['create_meeting']) && !empty($_POST['meeting']) && !empty($_POST['meeting_date'])){
+					$meetings = new Meeting();
+					$meetings->user_id = $_SESSION['id'];
+					$meetings->meeting = trim($_POST['meeting']);
+					$meetings->meeting_date = trim($_POST['meeting_date']);
 
-		$user_id = Note::find_user_id($_GET['id'])->user_id;
-
-		if($user_id == $_SESSION['id']){
-
+					if($meetings->update($_GET['id'])){
+						$_SESSION['alert-success'] = "Meeting successfully updated";
+						redirect("appointments.php");
+						exit();
+					} else {
+						$_SESSION['alert-danger'] = "Meeting was not updated";
+						redirect("appointments.php");
+						exit();
+					}
+				}
+			} else {
+				$_SESSION['blank_statement'] = "YOU ARE NOT THE OWNER OF THIS MEETING";
+			}
 		} else {
-			$_SESSION['blank_statement'] = "YOU ARE NOT THE OWNER OF THIS NOTE";
-		}
-
-	} else {
-		redirect("notes.php");
-		exit();
-	}
-
-	if(isset($_POST['update_note']) && !empty($_POST['note'])){
-		$notes = new Note();
-
-		$notes->note = trim($_POST['note']);
-		$notes->user_id = $user_id;
-		if($notes->update($_GET['id'])){
-			$_SESSION['alert-success'] = "Note was successfully created";
-			redirect("notes.php");
-			exit();
-		} else {
-			$_SESSION['alert-danger'] = "Note was not successfully created";
-			redirect("notes.php");
+			redirect("appointments.php");
 			exit();
 		}
-	}
-?>
+ ?>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Notes App | Adegbulugbe Timilehin</title>
+	<title>Appointments App | Adegbulugbe Timilehin</title>
 	<link rel="stylesheet" type="text/css" href="../bootstrapv4/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../fonts/css/all.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 	<link rel="stylesheet" type="text/css" href="../styles/app.css">
 </head>
 <body>
@@ -84,25 +81,33 @@
 	<section class="container">
 		
 	<section class="header">
+	<?php if(isset($_SESSION['blank_statement'])): ?>
+		<?php echo $_SESSION['blank_statement'];
+			  unset($_SESSION['blank_statement']);
+		 ?>
+	<?php else: ?>
 		<div class="header-topic container-fluid">
-			<p>Add New Note</p>
+			<p>New Appointment</p>
 		</div>
 		<div class="post">
-			<?php if(isset($_SESSION['blank_statement'])): ?>
-				<?php echo $_SESSION['blank_statement']; 
-					  unset($_SESSION['blank_statement']); ?>
-				<?php else: ?>
-				<?php 
-					$notes = Note::find_by_id($_GET['id']);
-				 ?>
-				<form class="container-fluid" method="post">
-					<div class="form-group">
-					    <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="New Note" rows="3" name="note"><?php echo $notes->note; ?></textarea>
-					</div>
-					<button type="submit" class="btn btn-dark" name="update_note">Submit</button>
-				</form>
-			<?php endif; ?>
+			<form class="container-fluid" method="post">
+			 	<?php include("../includes/sessions.php"); ?>
+			 	<?php $meetings = Meeting::find_by_id($_GET['id']);  ?>
+				<div class="form-group">
+				    <label for="exampleFormControlTextarea1">Appointment</label>
+				    <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="New Meeting" rows="3" name="meeting"><?php echo $meetings->meeting; ?></textarea>
+				</div>
+				<div class="form-group">
+				    <label for="exampleFormControlTextarea1">Appointment Time</label>
+				    <input type="text" class="form-control clockpicker" name="meeting_date" value="<?php echo $meetings->meeting_date; ?>">
+				    <span class="input-group-addon">
+				        <span class="glyphicon glyphicon-time"></span>
+				    </span>
+				</div>
+				<button type="submit" class="btn btn-dark" name="create_meeting">Submit</button>
+			</form>
 		</div> 
+	<?php endif; ?>
 	</section>
 	
 	
@@ -110,6 +115,14 @@
 </body>
 <script type="text/javascript" src="../jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="../bootstrapv4/js/bootstrap.min.js"></script>
+<!-- ClockPicker script -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script type="text/javascript" src="../scripts/script.js"></script>
-
+<script type="text/javascript">
+$('.clockpicker').flatpickr({
+	enableTime: true,
+    dateFormat: "Y-m-d H:i",
+    minDate: "today"
+});
+</script>
 </html>
