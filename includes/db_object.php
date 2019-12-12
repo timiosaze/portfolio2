@@ -153,10 +153,10 @@
 			return (mysqli_affected_rows($database->connection) == 1) ? true : false;
 		}
 
-		public function count_all(){
+		public static function count_all($user_id){
 			global $database;
 
-			$sql = "SELECT COUNT(*) FROM " . static::$db_table;
+			$sql = "SELECT COUNT(*) FROM " . static::$db_table . " WHERE user_id = $user_id ";
 			$result_query = $database->query($sql);
 			$row = mysqli_fetch_array($result_query);
 

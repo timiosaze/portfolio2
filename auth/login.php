@@ -1,6 +1,5 @@
 <?php ob_start(); ?>
 <?php require_once("../includes/init.php"); ?>
-<?php echo $_SESSION['link']; ?>
 <?php 
 	if(isset($_POST['login']) && !empty($_POST['username']) &&  !empty($_POST['password'])){
 		User::login_user($_POST['username'], $_POST['password']);

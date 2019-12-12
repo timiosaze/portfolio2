@@ -195,7 +195,20 @@
 		<div class="header-topic container-fluid">
 			<p>NUMBERS(click to edit | delete)</p>
 		</div>
-		<?php $contacts = Contact::find_all_by_user($_SESSION['id']); ?>
+		<?php 
+
+			$page = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
+			$items_per_page = 5;
+			$items_total_count = Contact::count_all($_SESSION['id']);
+			$paginate = new Paginate($page, $items_per_page, $items_total_count);
+
+			$user_id = $_SESSION['id'];
+			$sql = "SELECT * FROM contacts ";
+			$sql .= " WHERE user_id = $user_id ORDER BY contact_name ASC LIMIT {$paginate->offset()}, {$items_per_page} ";
+
+			$contacts = Contact::find_by_query($sql);
+
+		?>
 		<?php foreach ($contacts as $contact): ?>
 		<div class="element-group">
 			<div class="element">
@@ -230,6 +243,18 @@
 			</div>
 		</div>
 	<?php endforeach; ?>
+		<ul class="pagina">
+			<?php   if($paginate->page_total() > 1){
+						if($paginate->has_previous()){
+							echo "<li class='float-left'><a href='contacts.php?page={$paginate->previous()}'>Previous</a></li>";
+						}
+						if($paginate->has_next()){
+							echo "<li class='float-right'><a href='contacts.php?page={$paginate->next()}'>Next</a></li>";
+						}
+					} 
+			?>
+			
+		</ul>
 	</section>
 	
 	</section>

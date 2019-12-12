@@ -103,7 +103,20 @@
 		<div class="header-topic container-fluid">
 			<p>NOTES(click to edit or delete)</p>
 		</div>
-		<?php $notes = Note::find_all_by_user($_SESSION['id']); ?>
+		<?php 
+
+			$page = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
+			$items_per_page = 5;
+			$items_total_count = Note::count_all($_SESSION['id']);
+			$paginate = new Paginate($page, $items_per_page, $items_total_count);
+
+			$user_id = $_SESSION['id'];
+			$sql = "SELECT * FROM notes ";
+			$sql .= " WHERE user_id = $user_id ORDER BY updated_at DESC LIMIT {$paginate->offset()}, {$items_per_page} ";
+
+			$notes = Note::find_by_query($sql);
+
+		?>
 		<?php foreach($notes as $the_note): ?>
 		<div class="element-group">
 			<div class="element">
@@ -134,6 +147,18 @@
 
 		</div>
 		<?php endforeach ?>
+		<ul class="pagina">
+			<?php   if($paginate->page_total() > 1){
+						if($paginate->has_previous()){
+							echo "<li class='float-left'><a href='notes.php?page={$paginate->previous()}'>Previous</a></li>";
+						}
+						if($paginate->has_next()){
+							echo "<li class='float-right'><a href='notes.php?page={$paginate->next()}'>Next</a></li>";
+						}
+					} 
+			?>
+			
+		</ul>
 	</section>
 	
 	</section>

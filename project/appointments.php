@@ -113,7 +113,18 @@
 			<p>APPOINTMENTS(click to edit or delete)</p>
 		</div>
 		<?php 
-			$meetings = Meeting::find_all_by_user($_SESSION['id']);
+
+			$page = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
+			$items_per_page = 5;
+			$items_total_count = Meeting::count_all($_SESSION['id']);
+			$paginate = new Paginate($page, $items_per_page, $items_total_count);
+
+			$user_id = $_SESSION['id'];
+			$sql = "SELECT * FROM meetings ";
+			$sql .= " WHERE user_id = $user_id ORDER BY meeting_date ASC LIMIT {$paginate->offset()}, {$items_per_page} ";
+
+			$meetings = Meeting::find_by_query($sql);
+
 		?>
 		<?php foreach($meetings as $the_meeting): ?>
 		<div class="element-group">
@@ -155,6 +166,18 @@
 
 		</div>
 		<?php endforeach; ?>
+		<ul class="pagina">
+			<?php   if($paginate->page_total() > 1){
+						if($paginate->has_previous()){
+							echo "<li class='float-left'><a href='appointments.php?page={$paginate->previous()}'>Previous</a></li>";
+						}
+						if($paginate->has_next()){
+							echo "<li class='float-right'><a href='appointments.php?page={$paginate->next()}'>Next</a></li>";
+						}
+					} 
+			?>
+			
+		</ul>
 	</section>
 	
 	</section>

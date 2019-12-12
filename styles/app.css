@@ -380,3 +380,14 @@ button .picture-button {
     -o-transform: scale(1.2);
     transform: scale(1.2);
 }
+.pagina {
+  display: inline;
+  list-style-type: none !important;
+  background-color: transparent;
+}
+.pagina li {
+  display: inline;
+  padding: 0px 10px; 
+  background-color: transparent;
+
+}
